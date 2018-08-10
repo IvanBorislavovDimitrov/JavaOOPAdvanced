@@ -4,6 +4,7 @@ import panzer.contracts.BattleOperator;
 import panzer.contracts.Vehicle;
 
 public class PanzerBattleOperator implements BattleOperator {
+
     @Override
     public String battle(Vehicle attacker, Vehicle target) {
         double attackerWeight = attacker.getTotalWeight();
@@ -19,12 +20,12 @@ public class PanzerBattleOperator implements BattleOperator {
         boolean isAttackerTurn = true;
         boolean isSomeoneDead = isDead(attackerHitPoints) || isDead(targetHitPoints);
 
-        while(!isSomeoneDead) {
-            if(isAttackerTurn) {
-                targetHitPoints -= (long)Math.max(0, Math.ceil(attackerAttack - (targetDefense + (targetWeight / 2))));
+        while (!isSomeoneDead) {
+            if (isAttackerTurn) {
+                targetHitPoints -=  Math.ceil(attackerAttack - (targetDefense + (targetWeight / 2)));
                 isAttackerTurn = false;
             } else {
-                attackerHitPoints -= (long)Math.max(0, Math.ceil(targetAttack - (attackerDefense + (attackerWeight / 2))));
+                attackerHitPoints -=  Math.ceil(targetAttack - (attackerDefense + (attackerWeight / 2)));
                 isAttackerTurn = true;
             }
 
@@ -33,7 +34,7 @@ public class PanzerBattleOperator implements BattleOperator {
 
         String result = null;
 
-        if(isDead(attackerHitPoints)) {
+        if (isDead(attackerHitPoints)) {
             result = target.getModel();
         } else {
             result = attacker.getModel();

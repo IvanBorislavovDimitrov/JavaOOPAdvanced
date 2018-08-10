@@ -1,15 +1,13 @@
 package panzer.engine;
 
+import panzer.commands.Command;
 import panzer.contracts.InputReader;
 import panzer.contracts.Manager;
 import panzer.contracts.OutputWriter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class Engine {
-
-    private static final String TERMINATE_COMMAND = "Terminate";
 
     private InputReader inputReader;
     private OutputWriter outputWriter;
@@ -21,60 +19,19 @@ public class Engine {
         this.manager = manager;
     }
 
-    public void run() {
-        String line;
-        while (!(line = inputReader.readLine().trim()).equals(TERMINATE_COMMAND)) {
-            executeCommand(line);
-        }
+    public void run() throws Exception {
+        while (true) {
+            String[] tokens = this.inputReader.readLine().split("\\s+");
+            Command command = (Command) Class.forName("panzer.commands." + tokens[0] + "Command")
+                    .getDeclaredConstructor().newInstance();
 
-        String log = this.manager.terminate(null);
-        this.outputWriter.println(log);
-    }
+            String log = command.execute(this.manager, Arrays.stream(tokens).skip(1).toArray(String[]::new));
 
-    private void executeCommand(String line) {
-        String[] tokens = line.split("\\s+");
-        String command = tokens[0];
-        switch (command) {
-            case "Vehicle":
-                List<String> arguments = new ArrayList<>() {{
-                    add(tokens[1]);
-                    add(tokens[2]);
-                    add(tokens[3]);
-                    add(tokens[4]);
-                    add(tokens[5]);
-                    add(tokens[6]);
-                    add(tokens[7]);
-                }};
-                String log = this.manager.addVehicle(arguments);
-                this.outputWriter.println(log);
+            this.outputWriter.println(log);
+
+            if (tokens[0].equalsIgnoreCase("Terminate")) {
                 break;
-            case "Part":
-                arguments = new ArrayList<>() {{
-                    add(tokens[1]);
-                    add(tokens[2]);
-                    add(tokens[3]);
-                    add(tokens[4]);
-                    add(tokens[5]);
-                    add(tokens[6]);
-                }};
-                log = this.manager.addPart(arguments);
-                this.outputWriter.println(log);
-                break;
-            case "Inspect":
-                arguments = new ArrayList<>() {{
-                    add(tokens[1]);
-                }};
-                log = this.manager.inspect(arguments);
-                this.outputWriter.println(log);
-                break;
-            case "Battle":
-                arguments = new ArrayList<>() {{
-                    add(tokens[1]);
-                    add(tokens[2]);
-                }};
-                log = this.manager.battle(arguments);
-                this.outputWriter.println(log);
-                break;
+            }
         }
     }
 }

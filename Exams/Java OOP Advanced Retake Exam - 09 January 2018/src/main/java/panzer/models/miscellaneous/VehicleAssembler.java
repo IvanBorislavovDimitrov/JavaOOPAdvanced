@@ -63,25 +63,16 @@ public class VehicleAssembler implements Assembler {
 
     @Override
     public void addArsenalPart(Part arsenalPart) {
-        this.arsenalParts.add((AttackModifyingPart) arsenalPart);
+        this.arsenalParts.add((AttackModifyingPart)arsenalPart);
     }
 
     @Override
     public void addShellPart(Part shellPart) {
-        this.shellParts.add((DefenseModifyingPart) shellPart);
+        this.shellParts.add((DefenseModifyingPart)shellPart);
     }
 
     @Override
     public void addEndurancePart(Part endurancePart) {
-        this.enduranceParts.add((HitPointsModifyingPart) endurancePart);
-    }
-
-    public List<Part> getAllParts() {
-        List<Part> parts = new ArrayList<>();
-        parts.addAll(this.arsenalParts);
-        parts.addAll(this.shellParts);
-        parts.addAll(this.enduranceParts);
-
-        return parts;
+        this.enduranceParts.add((HitPointsModifyingPart)endurancePart);
     }
 }
