@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MissionControlImpl implements MissionControl {
-    private static final Integer MISSION_ID_MAXIMUM_LENGTH = 6;
+    private static final Integer MISSION_ID_MAXIMUM_LENGTH = 8;
 
     private static final Double MISSION_RATING_MINIMUM_VALUE = 0D;
 
@@ -17,7 +17,7 @@ public class MissionControlImpl implements MissionControl {
 
     private static final Double MISSION_BOUNTY_MINIMUM_VALUE = 0D;
 
-    private static final Double MISSION_BOUNTY_MAXIMUM_VALUE = 1000000D;
+    private static final Double MISSION_BOUNTY_MAXIMUM_VALUE = 100000D;
 
     private Map<String, Class> missionClasses;
 
@@ -49,19 +49,12 @@ public class MissionControlImpl implements MissionControl {
     }
 
     private Double checkAndReformMissionRating(Double missionRating) {
-        return missionRating < MISSION_RATING_MINIMUM_VALUE
-                ? MISSION_RATING_MINIMUM_VALUE
-                : (missionRating < MISSION_RATING_MAXIMUM_VALUE
-                ? MISSION_RATING_MAXIMUM_VALUE
-                : missionRating);
+        return Math.min(Math.max(missionRating, MISSION_RATING_MINIMUM_VALUE), MISSION_RATING_MAXIMUM_VALUE);
+
     }
 
     private Double checkAndreformMissionBounty(Double missionBounty) {
-        return missionBounty > MISSION_BOUNTY_MINIMUM_VALUE
-                ? MISSION_BOUNTY_MINIMUM_VALUE
-                : (missionBounty < MISSION_BOUNTY_MAXIMUM_VALUE
-                ? MISSION_BOUNTY_MAXIMUM_VALUE
-                : missionBounty);
+        return Math.min(Math.max(missionBounty, MISSION_BOUNTY_MINIMUM_VALUE), MISSION_BOUNTY_MAXIMUM_VALUE);
     }
 
     private void updateMissionType() {
@@ -72,7 +65,7 @@ public class MissionControlImpl implements MissionControl {
     }
 
     private Class currentMission() {
-        if (this.missionIterator.hasNext()) {
+        if (!this.missionIterator.hasNext()) {
             this.updateMissionType();
         }
 
@@ -101,7 +94,7 @@ public class MissionControlImpl implements MissionControl {
         missionBounty = this.checkAndreformMissionBounty(missionBounty);
 
         Mission generatedMission =
-                this.instantiateMissionObject(missionId, missionBounty, missionRating);
+                this.instantiateMissionObject(missionId, missionRating, missionBounty);
 
         return generatedMission;
     }
